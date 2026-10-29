@@ -1,0 +1,14 @@
+node_modules
+dist
+*.tsbuildinfo
+.vite
+
+# Local environment (never commit real values)
+.env
+.env.*
+!.env.example
+
+# Editors and OS
+.DS_Store
+.idea
+*.log

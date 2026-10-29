@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+/* Base styles only; components use Tailwind utility classes. */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply bg-slate-50 font-sans text-slate-900 antialiased;
+}
