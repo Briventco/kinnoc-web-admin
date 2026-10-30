@@ -6,6 +6,7 @@ import type {
   UpdateEventInput,
 } from '../types/event';
 import { apiRequest } from './client';
+import { countPages, type ItemCount } from './pagination';
 
 /** Admin event endpoints (kinnoc-api docs/events.md §3). Admin routes take IDs, not slugs. */
 
@@ -62,28 +63,10 @@ export function restoreEvent(id: string): Promise<AdminEvent> {
   });
 }
 
-export interface EventCount {
-  count: number;
-  /** False when there were more events than we were willing to page through. */
-  exact: boolean;
-}
-
-/**
- * The API has no totals, so counts come from paging through the list (50 per
- * page) up to `maxPages`. Beyond that the count is a lower bound ("200+").
- */
-export async function countEvents(
+/** Event count via paging (the API has no totals); a lower bound past 200. */
+export function countEvents(
   query: Omit<AdminEventListQuery, 'limit' | 'cursor'>,
   signal?: AbortSignal,
-  maxPages = 4,
-): Promise<EventCount> {
-  let count = 0;
-  let cursor: string | undefined;
-  for (let page = 0; page < maxPages; page++) {
-    const result = await listEvents({ ...query, limit: 50, cursor }, signal);
-    count += result.items.length;
-    if (!result.nextCursor) return { count, exact: true };
-    cursor = result.nextCursor;
-  }
-  return { count, exact: false };
+): Promise<ItemCount> {
+  return countPages((cursor) => listEvents({ ...query, limit: 50, cursor }, signal));
 }

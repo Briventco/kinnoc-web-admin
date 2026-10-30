@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
+import { useCallback } from 'react';
+import { PlusCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import { errorMessage } from '../api/client';
 import { listEvents } from '../api/events';
@@ -10,8 +10,10 @@ import { Button, ButtonLink } from '../components/ui/Button';
 import { EmptyState } from '../components/ui/EmptyState';
 import { FlashMessage } from '../components/ui/FlashMessage';
 import { PageHeader } from '../components/ui/PageHeader';
+import { Pagination } from '../components/ui/Pagination';
 import { Spinner } from '../components/ui/Spinner';
 import { useAsync } from '../hooks/useAsync';
+import { useCursorPaging } from '../hooks/useCursorPaging';
 import type { EventCategory, EventStatus } from '../types/event';
 import { localDateToIso } from '../utils/dates';
 
@@ -30,13 +32,8 @@ export function EventsPage() {
   const filters = Object.fromEntries(FILTER_KEYS.map((key) => [key, params.get(key) ?? ''])) as unknown as EventFilterValues;
   const filterKey = params.toString();
 
-  // Cursor history for the current filters; reset whenever the filters change.
-  const [paging, setPaging] = useState<{ key: string; cursors: (string | undefined)[] }>({
-    key: filterKey,
-    cursors: [undefined],
-  });
-  const cursors = paging.key === filterKey ? paging.cursors : [undefined];
-  const cursor = cursors[cursors.length - 1];
+  const paging = useCursorPaging(filterKey);
+  const { cursor } = paging;
 
   const load = useCallback(
     (signal: AbortSignal) =>
@@ -151,27 +148,7 @@ export function EventsPage() {
 
         {data && data.items.length > 0 && <EventTable events={data.items} />}
 
-        {data && (cursors.length > 1 || data.nextCursor) && (
-          <div className="flex items-center justify-between gap-2">
-            <Button
-              variant="secondary"
-              disabled={cursors.length <= 1}
-              onClick={() => setPaging({ key: filterKey, cursors: cursors.slice(0, -1) })}
-            >
-              <ChevronLeft className="size-4" aria-hidden />
-              Previous
-            </Button>
-            <span className="text-sm text-slate-500">Page {cursors.length}</span>
-            <Button
-              variant="secondary"
-              disabled={!data.nextCursor}
-              onClick={() => setPaging({ key: filterKey, cursors: [...cursors, data.nextCursor ?? undefined] })}
-            >
-              Next
-              <ChevronRight className="size-4" aria-hidden />
-            </Button>
-          </div>
-        )}
+        {data && <Pagination paging={paging} nextCursor={data.nextCursor} />}
       </div>
     </>
   );

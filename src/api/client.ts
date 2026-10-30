@@ -107,7 +107,8 @@ export interface RequestOptions {
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', body, query, auth = true, signal } = options;
 
-  const url = new URL(env.apiBaseUrl + path);
+  // A relative base ("/api/v1", via the dev proxy) resolves against this site.
+  const url = new URL(env.apiBaseUrl + path, globalThis.location?.origin);
   for (const [key, value] of Object.entries(query ?? {})) {
     if (value !== undefined && value !== '') url.searchParams.set(key, String(value));
   }

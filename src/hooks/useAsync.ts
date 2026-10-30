@@ -36,6 +36,8 @@ export function useAsync<T>(load: (signal: AbortSignal) => Promise<T>) {
     data: current?.data,
     error: current?.error,
     loading: current === null,
+    /** The last successful result of this `load`, kept while `reload()` runs. */
+    latest: result && result.load === load ? result.data : undefined,
     reload,
   };
 }

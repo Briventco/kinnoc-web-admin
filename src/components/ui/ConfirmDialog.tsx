@@ -8,6 +8,8 @@ interface ConfirmDialogProps {
   confirmLabel: string;
   tone?: 'primary' | 'danger';
   loading?: boolean;
+  /** Disable the confirm button, e.g. until a required field is filled in. */
+  confirmDisabled?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -20,6 +22,7 @@ export function ConfirmDialog({
   confirmLabel,
   tone = 'primary',
   loading = false,
+  confirmDisabled = false,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -49,7 +52,7 @@ export function ConfirmDialog({
         <Button variant="secondary" onClick={onCancel} disabled={loading}>
           Back
         </Button>
-        <Button variant={tone} onClick={onConfirm} loading={loading}>
+        <Button variant={tone} onClick={onConfirm} loading={loading} disabled={confirmDisabled}>
           {confirmLabel}
         </Button>
       </div>

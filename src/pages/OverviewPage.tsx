@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Link } from 'react-router';
 import { errorMessage } from '../api/client';
-import { countEvents, type EventCount, listEvents } from '../api/events';
+import { countEvents, listEvents } from '../api/events';
+import type { ItemCount } from '../api/pagination';
 import { useAuth } from '../auth/useAuth';
 import { EventStatusBadges } from '../components/events/EventStatusBadges';
 import { EventThumbnail } from '../components/events/EventTable';
@@ -15,7 +16,7 @@ import { Spinner } from '../components/ui/Spinner';
 import { useAsync } from '../hooks/useAsync';
 import { formatDateTime } from '../utils/dates';
 
-function StatCard({ label, value, loading }: { label: string; value?: EventCount; loading: boolean }) {
+function StatCard({ label, value, loading }: { label: string; value?: ItemCount; loading: boolean }) {
   let shown = '—';
   if (value) shown = value.exact ? String(value.count) : `${value.count}+`;
   return (

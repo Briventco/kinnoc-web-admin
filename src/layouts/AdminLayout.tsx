@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarDays, LayoutDashboard, LogOut, Menu, PlusCircle, Settings, X } from 'lucide-react';
+import { BadgeCheck, CalendarDays, LayoutDashboard, LogOut, Menu, PlusCircle, Settings, X } from 'lucide-react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../auth/useAuth';
 
@@ -7,6 +7,7 @@ const NAV = [
   { to: '/', label: 'Overview', icon: LayoutDashboard },
   { to: '/events', label: 'Events', icon: CalendarDays },
   { to: '/events/new', label: 'Create Event', icon: PlusCircle },
+  { to: '/verification', label: 'Verification', icon: BadgeCheck },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
